@@ -4,6 +4,6 @@ __pycache__/
 .env
 output/
 images/
-books/
-*.pdf
+books/*.pdf
 .streamlit/
+*.log
