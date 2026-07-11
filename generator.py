@@ -5,8 +5,8 @@ import json
 import re
 from datetime import datetime
 
-BOOKS_FOLDER = "../books"
-OUTPUT_FOLDER = "../output"
+BOOKS_FOLDER = "books"
+OUTPUT_FOLDER = "output"
 _model = None
 
 
