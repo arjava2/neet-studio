@@ -7,7 +7,8 @@ from generator import (
 )
 from image_search import (
     extract_all_books, get_extracted_books, get_book_images,
-    get_all_extracted_count, copy_image_to_output
+    get_all_extracted_count, copy_image_to_output,
+    save_uploaded_pdf, delete_pdf
 )
 
 st.set_page_config(
@@ -132,7 +133,6 @@ st.markdown("""
         border-radius: 8px !important;
         color: #ededed !important;
         font-weight: 500 !important;
-        transition: all 0.15s ease;
     }
     
     .streamlit-expanderHeader:hover {
@@ -315,11 +315,6 @@ st.markdown("""
         display: flex;
         align-items: center;
         gap: 12px;
-        transition: all 0.15s ease;
-    }
-    
-    .option-row:hover {
-        border-color: #3a3a3a;
     }
     
     .option-correct {
@@ -328,7 +323,7 @@ st.markdown("""
     }
     
     .option-marker {
-        width: 20px; height: 20px;
+        width: 24px; height: 24px;
         border-radius: 50%;
         display: inline-flex;
         align-items: center;
@@ -355,6 +350,25 @@ st.markdown("""
     .badge-medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
     .badge-hard { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
     .badge-verified { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; }
+    
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
+        border: 1px dashed #262626;
+        border-radius: 12px;
+    }
+    
+    .stFileUploader > div {
+        background-color: #141414 !important;
+        border: 2px dashed #6366f1 !important;
+        border-radius: 12px !important;
+        padding: 20px !important;
+    }
+    
+    .stFileUploader label {
+        color: #ededed !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
@@ -425,17 +439,18 @@ with st.sidebar:
     st.markdown("<div style='height: 32px'></div>", unsafe_allow_html=True)
     
     st.markdown('<div class="section-label">Resources</div>', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 13px; color: #a1a1a1;">📖 <a href="https://aistudio.google.com/apikey" style="color: #a5b4fc; text-decoration: none;">Get API Key</a></div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 13px; color: #a1a1a1;">🔑 <a href="https://aistudio.google.com/apikey" style="color: #a5b4fc; text-decoration: none;" target="_blank">Get Free API Key</a></div>', unsafe_allow_html=True)
+    st.markdown('<div style="font-size: 13px; color: #a1a1a1; margin-top: 4px;">📖 <a href="https://ncert.nic.in/textbook.php" style="color: #a5b4fc; text-decoration: none;" target="_blank">Download NCERT PDFs</a></div>', unsafe_allow_html=True)
     st.markdown('<div style="font-size: 13px; color: #a1a1a1; margin-top: 4px;">💡 Free tier: 1500 req/day</div>', unsafe_allow_html=True)
     st.markdown('<div style="font-size: 12px; color: #525252; margin-top: 16px;">Version 6.0</div>', unsafe_allow_html=True)
 
-st.markdown("# Question Generator")
-st.markdown('<div style="color: #a1a1a1; font-size: 15px; margin-top: -8px;">Create NEET-level questions from your NCERT library using AI</div>', unsafe_allow_html=True)
+st.markdown("# NEET Question Studio")
+st.markdown('<div style="color: #a1a1a1; font-size: 15px; margin-top: -8px;">Generate NEET-level questions from NCERT PDFs using AI</div>', unsafe_allow_html=True)
 
 st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
 
 if not st.session_state.ai_ready:
-    st.info("👋 Welcome! Please add your Gemini API key in the sidebar to start.")
+    st.info("👋 Welcome! Please add your free Gemini API key in the sidebar to get started.")
     
     st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
     
@@ -443,7 +458,7 @@ if not st.session_state.ai_ready:
     with col1:
         st.markdown("""
         <div class="info-card">
-            <div style="font-size: 24px; margin-bottom: 8px;">⚡</div>
+            <div style="font-size: 28px; margin-bottom: 8px;">⚡</div>
             <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">Fast Generation</div>
             <div style="color: #a1a1a1; font-size: 13px;">Generate up to 30 questions in under a minute</div>
         </div>
@@ -451,37 +466,59 @@ if not st.session_state.ai_ready:
     with col2:
         st.markdown("""
         <div class="info-card">
-            <div style="font-size: 24px; margin-bottom: 8px;">🎯</div>
+            <div style="font-size: 28px; margin-bottom: 8px;">🎯</div>
             <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">Answer Verification</div>
-            <div style="color: #a1a1a1; font-size: 13px;">Built-in AI verification for accuracy</div>
+            <div style="color: #a1a1a1; font-size: 13px;">Built-in AI verification for accuracy check</div>
         </div>
         """, unsafe_allow_html=True)
     with col3:
         st.markdown("""
         <div class="info-card">
-            <div style="font-size: 24px; margin-bottom: 8px;">🌐</div>
+            <div style="font-size: 28px; margin-bottom: 8px;">🌐</div>
             <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">Bilingual Output</div>
             <div style="color: #a1a1a1; font-size: 13px;">Both English and Hindi versions included</div>
         </div>
         """, unsafe_allow_html=True)
     
+    st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
+    
+    st.markdown("### 🚀 Quick Start Guide")
+    st.markdown("""
+    1. **Get API Key** - Click the link in sidebar to get your free Gemini key
+    2. **Connect** - Paste key and click Connect button
+    3. **Upload PDFs** - Add your NCERT PDFs in the Library tab
+    4. **Generate** - Select chapter and generate questions!
+    """)
+    
     st.stop()
 
-tab1, tab2, tab3 = st.tabs(["✨ Generate", "📚 Library", "🖼️ Diagrams"])
+tab1, tab2, tab3, tab4 = st.tabs(["✨ Generate", "📁 Upload PDFs", "📚 History", "🖼️ Diagrams"])
 
 with tab1:
+    if sum(len(v) for v in books.values()) == 0:
+        st.markdown("""
+        <div class="empty-state">
+            <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
+            <h3 style="margin: 0 0 8px 0;">No PDFs uploaded yet</h3>
+            <p style="color: #a1a1a1; margin: 0;">Go to the <strong>Upload PDFs</strong> tab to add your NCERT books</p>
+        </div>
+        """, unsafe_allow_html=True)
+        st.stop()
+    
     col_left, col_right = st.columns([1, 1], gap="large")
     
     with col_left:
         st.markdown('<div class="section-label">Parameters</div>', unsafe_allow_html=True)
         
-        subject = st.selectbox("Subject", ["Biology", "Physics", "Chemistry"])
+        available_subjects = [s.title() for s in ["Biology", "Physics", "Chemistry"] if books[s.lower()]]
+        
+        if not available_subjects:
+            st.error("No subject PDFs available. Please upload PDFs first.")
+            st.stop()
+        
+        subject = st.selectbox("Subject", available_subjects)
         sub_key = subject.lower()
         pdfs = books[sub_key]
-        
-        if not pdfs:
-            st.error(f"No {subject} PDFs found")
-            st.stop()
         
         chapter_options = [f"{i+1}. {get_chapter_name(p)}" for i, p in enumerate(pdfs)]
         chapter_choice = st.selectbox("Chapter", chapter_options)
@@ -521,7 +558,7 @@ with tab1:
             <div class="info-row"><div class="info-label">Chapter</div><div class="info-value">{chapter_name}</div></div>
             <div class="info-row"><div class="info-label">Topic</div><div class="info-value">{topic if topic else 'Full chapter'}</div></div>
             <div class="info-row"><div class="info-label">Quantity</div><div class="info-value">{num_q} questions</div></div>
-            <div class="info-row"><div class="info-label">PYQ</div><div class="info-value">{'Yes' if use_pyq else 'No'}</div></div>
+            <div class="info-row"><div class="info-label">PYQ Ref</div><div class="info-value">{'Yes' if use_pyq else 'No'}</div></div>
         </div>
         """, unsafe_allow_html=True)
         
@@ -547,7 +584,7 @@ with tab1:
         col_h1, col_h2 = st.columns([3, 1])
         with col_h1:
             st.markdown(f"### Generated Results")
-            st.caption(f"{len(questions)} questions ready. Verify each before using.")
+            st.caption(f"{len(questions)} questions ready. Verify each before using on TrackPrep.")
         with col_h2:
             verified_count = sum(1 for i in range(len(questions)) if st.session_state.verify_results.get(i, {}).get("matches"))
             st.metric("Verified", f"{verified_count}/{len(questions)}")
@@ -684,12 +721,75 @@ D) {q.get('option_d_hindi', '')}
                     st.text_area("Hindi", hin_text, height=180, key=f"hin_{i}", label_visibility="collapsed")
 
 with tab2:
+    st.markdown('<div class="section-label">Upload NCERT PDFs</div>', unsafe_allow_html=True)
+    st.caption("Upload your NCERT PDFs to build your personal library")
+    
+    st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
+    
+    st.info("💡 **Tip:** Name your files clearly (e.g., `ncert_bio11_ch01_living_world.pdf`) for better organization")
+    
+    category = st.selectbox(
+        "PDF Category",
+        ["biology", "physics", "chemistry", "pyq", "other"],
+        help="Select the subject category for the PDF"
+    )
+    
+    uploaded_files = st.file_uploader(
+        "Choose PDF files",
+        type=["pdf"],
+        accept_multiple_files=True,
+        help="Upload one or more PDF files"
+    )
+    
+    if uploaded_files:
+        if st.button("📤 Upload All", type="primary", use_container_width=True):
+            success_count = 0
+            for uploaded_file in uploaded_files:
+                try:
+                    save_uploaded_pdf(uploaded_file, category)
+                    success_count += 1
+                except Exception as e:
+                    st.error(f"Failed to upload {uploaded_file.name}: {e}")
+            
+            if success_count > 0:
+                st.success(f"✅ Successfully uploaded {success_count} PDF(s)")
+                st.rerun()
+    
+    st.markdown("---")
+    
+    st.markdown('<div class="section-label">Your Library</div>', unsafe_allow_html=True)
+    
+    books_current = scan_books()
+    
+    if sum(len(v) for v in books_current.values()) == 0:
+        st.markdown("""
+        <div class="empty-state">
+            <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
+            <h3 style="margin: 0 0 8px 0;">Library is empty</h3>
+            <p style="color: #a1a1a1; margin: 0;">Upload some PDFs above to get started</p>
+        </div>
+        """, unsafe_allow_html=True)
+    else:
+        for cat, pdfs_list in books_current.items():
+            if pdfs_list:
+                st.markdown(f"**{cat.title()}** ({len(pdfs_list)} files)")
+                for pdf in pdfs_list:
+                    col_p1, col_p2 = st.columns([5, 1])
+                    with col_p1:
+                        st.markdown(f"📄 `{pdf}`")
+                    with col_p2:
+                        if st.button("🗑️", key=f"del_{pdf}", use_container_width=True):
+                            delete_pdf(pdf)
+                            st.rerun()
+                st.markdown("")
+
+with tab3:
     st.markdown('<div class="section-label">Question History</div>', unsafe_allow_html=True)
     st.caption("Browse and download previously generated question sets")
     
     st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
     
-    output_dir = "../output"
+    output_dir = "output"
     if os.path.exists(output_dir):
         files = sorted([f for f in os.listdir(output_dir) if f.endswith(".json")], reverse=True)
         
@@ -743,113 +843,91 @@ with tab2:
                         st.markdown("")
                         st.info(q.get('explanation_english', ''))
     else:
-        st.info("📁 Output directory not found. Generate questions to create it.")
+        st.info("📁 Generate some questions first to see them here.")
 
-with tab3:
+with tab4:
     st.markdown('<div class="section-label">NCERT Diagram Extractor</div>', unsafe_allow_html=True)
-    st.caption("Extract and browse figures directly from your NCERT PDF library")
+    st.caption("Extract and browse figures directly from your uploaded NCERT PDFs")
     
     st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
     
-    total_books, total_images = get_all_extracted_count()
-    
-    ds1, ds2, ds3 = st.columns([1, 1, 1])
-    with ds1:
-        st.metric("Books Indexed", total_books)
-    with ds2:
-        st.metric("Diagrams Available", total_images)
-    with ds3:
-        st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
-        if st.button("🔄 Extract All PDFs", type="primary", use_container_width=True):
-            with st.spinner("Processing all PDFs..."):
-                progress_bar = st.progress(0)
-                status = st.empty()
-                
-                def update(current, total, name):
-                    progress_bar.progress(current / total)
-                    status.caption(f"⚙️ Processing {current}/{total}: {name}")
-                
-                result = extract_all_books(progress_callback=update)
-                total = sum(len(imgs) for imgs in result.values())
-                st.success(f"✅ Extracted {total} diagrams from {len(result)} books")
-                st.rerun()
-    
-    st.markdown("---")
-    
-    extracted = get_extracted_books()
-    
-    if not extracted:
-        st.info("🎨 No diagrams extracted yet. Click 'Extract All PDFs' to begin. First run takes 3-5 minutes.")
+    if sum(len(v) for v in books.values()) == 0:
+        st.markdown("""
+        <div class="empty-state">
+            <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
+            <h3 style="margin: 0 0 8px 0;">No PDFs to extract from</h3>
+            <p style="color: #a1a1a1; margin: 0;">Upload PDFs first in the Upload PDFs tab</p>
+        </div>
+        """, unsafe_allow_html=True)
     else:
-        book_display = {b: b.replace("ncert_", "").replace("_", " ").title() for b in extracted}
+        total_books, total_images = get_all_extracted_count()
         
-        db1, db2 = st.columns([2, 1])
-        with db1:
-            selected_book = st.selectbox("Book", options=extracted, format_func=lambda x: book_display[x])
-        with db2:
-            per_row = st.selectbox("Grid", [2, 3, 4, 5], index=1)
+        ds1, ds2, ds3 = st.columns([1, 1, 1])
+        with ds1:
+            st.metric("Books Indexed", total_books)
+        with ds2:
+            st.metric("Diagrams Available", total_images)
+        with ds3:
+            st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
+            if st.button("🔄 Extract All PDFs", type="primary", use_container_width=True):
+                with st.spinner("Processing PDFs..."):
+                    progress_bar = st.progress(0)
+                    status = st.empty()
+                    
+                    def update(current, total, name):
+                        progress_bar.progress(current / total)
+                        status.caption(f"⚙️ Processing {current}/{total}: {name}")
+                    
+                    result = extract_all_books(progress_callback=update)
+                    total = sum(len(imgs) for imgs in result.values())
+                    st.success(f"✅ Extracted {total} diagrams from {len(result)} books")
+                    st.rerun()
         
-        if selected_book:
-            images = get_book_images(selected_book)
-            
-            if images:
-                all_pages = sorted(set(img["page"] for img in images))
-                page_options = ["All pages"] + [f"Page {p}" for p in all_pages]
-                selected_page = st.selectbox("Filter by page", page_options)
-                
-                if selected_page != "All pages":
-                    page_num = int(selected_page.replace("Page ", ""))
-                    filtered = [img for img in images if img["page"] == page_num]
-                else:
-                    filtered = images
-                
-                st.caption(f"Showing {len(filtered)} diagrams")
-                st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
-                
-                for row_start in range(0, len(filtered), per_row):
-                    cols = st.columns(per_row)
-                    for i, col in enumerate(cols):
-                        idx = row_start + i
-                        if idx < len(filtered):
-                            img = filtered[idx]
-                            with col:
-                                try:
-                                    st.image(img["path"], caption=f"Page {img['page']}")
-                                    
-                                    c1, c2 = st.columns(2)
-                                    with c1:
-                                        if st.button("✓ Select", key=f"use_{idx}", use_container_width=True):
-                                            new_name = f"used_{selected_book}_p{img['page']}_{idx+1}.jpg"
-                                            path = copy_image_to_output(img["path"], new_name)
-                                            if path:
-                                                st.success("Saved!")
-                                    with c2:
-                                        with open(img["path"], "rb") as f:
-                                            st.download_button("↓", f.read(), file_name=img["filename"], mime="image/jpeg", key=f"dl_{idx}", use_container_width=True)
-                                except:
-                                    st.caption(f"Error: {img['filename']}")
-            else:
-                st.info("No diagrams in this book")
-    
-    st.markdown("---")
-    st.markdown('<div class="section-label">Selected Images</div>', unsafe_allow_html=True)
-    
-    img_folder = "../images"
-    if os.path.exists(img_folder):
-        used = sorted([f for f in os.listdir(img_folder) if f.startswith("used_") and f.endswith((".jpg", ".png"))], reverse=True)
-        if used:
-            st.caption(f"📌 {len(used)} images selected")
-            st.markdown("<div style='height: 12px'></div>", unsafe_allow_html=True)
-            
-            cols = st.columns(4)
-            for i, img_name in enumerate(used[:8]):
-                with cols[i % 4]:
-                    try:
-                        st.image(os.path.join(img_folder, img_name), caption=img_name[:25])
-                        if st.button("🗑️ Remove", key=f"rem_{i}", use_container_width=True):
-                            os.remove(os.path.join(img_folder, img_name))
-                            st.rerun()
-                    except:
-                        pass
+        st.markdown("---")
+        
+        extracted = get_extracted_books()
+        
+        if not extracted:
+            st.info("🎨 No diagrams extracted yet. Click 'Extract All PDFs' to begin.")
         else:
-            st.caption("No images selected yet")
+            book_display = {b: b.replace("ncert_", "").replace("_", " ").title() for b in extracted}
+            
+            db1, db2 = st.columns([2, 1])
+            with db1:
+                selected_book = st.selectbox("Book", options=extracted, format_func=lambda x: book_display[x])
+            with db2:
+                per_row = st.selectbox("Grid", [2, 3, 4, 5], index=1)
+            
+            if selected_book:
+                images = get_book_images(selected_book)
+                
+                if images:
+                    all_pages = sorted(set(img["page"] for img in images))
+                    page_options = ["All pages"] + [f"Page {p}" for p in all_pages]
+                    selected_page = st.selectbox("Filter by page", page_options)
+                    
+                    if selected_page != "All pages":
+                        page_num = int(selected_page.replace("Page ", ""))
+                        filtered = [img for img in images if img["page"] == page_num]
+                    else:
+                        filtered = images
+                    
+                    st.caption(f"Showing {len(filtered)} diagrams")
+                    st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
+                    
+                    for row_start in range(0, len(filtered), per_row):
+                        cols = st.columns(per_row)
+                        for i, col in enumerate(cols):
+                            idx = row_start + i
+                            if idx < len(filtered):
+                                img = filtered[idx]
+                                with col:
+                                    try:
+                                        st.image(img["path"], caption=f"Page {img['page']}")
+                                        
+                                        with open(img["path"], "rb") as f:
+                                            st.download_button("↓ Download", f.read(), file_name=img["filename"], mime="image/jpeg", key=f"dl_{idx}", use_container_width=True)
+                                    except:
+                                        st.caption(f"Error: {img['filename']}")
+                else:
+                    st.info("No diagrams in this book")
