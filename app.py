@@ -15,92 +15,84 @@ st.set_page_config(
     page_title="NEET Studio",
     page_icon="◆",
     layout="wide",
-    initial_sidebar_state="auto"
+    initial_sidebar_state="collapsed"
 )
 
 st.markdown("""
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
     
     .stApp {
-        background-color: #0a0a0a;
-        color: #ededed;
+        background-color: #09090b;
+        color: #fafafa;
     }
     
     .stApp, .stApp p, .stApp span, .stApp label, .stApp div {
         font-family: 'Inter', -apple-system, sans-serif !important;
     }
     
-    h1, h2, h3, h4, h5, h6 {
+    h1, h2, h3, h4 {
         font-family: 'Inter', sans-serif !important;
         font-weight: 700 !important;
-        letter-spacing: -0.02em !important;
-        color: #ededed !important;
+        letter-spacing: -0.025em !important;
+        color: #fafafa !important;
     }
     
-    #MainMenu, footer, .stDeployButton { visibility: hidden; }
+    footer, .stDeployButton { display: none !important; }
+    #MainMenu { visibility: hidden; }
     
-    /* Header bar with sidebar toggle */
     header[data-testid="stHeader"] {
-        background-color: rgba(10, 10, 10, 0.95) !important;
-        backdrop-filter: blur(10px);
-        visibility: visible !important;
-        height: auto !important;
-        border-bottom: 1px solid #1f1f1f;
+        background-color: rgba(9, 9, 11, 0.8) !important;
+        backdrop-filter: blur(12px) !important;
+        border-bottom: 1px solid #27272a !important;
     }
     
-    /* Sidebar toggle button - always visible */
     [data-testid="stSidebarCollapsedControl"] {
-        display: block !important;
+        display: flex !important;
         visibility: visible !important;
-        top: 12px !important;
-        left: 12px !important;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
-        border-radius: 10px !important;
-        padding: 6px 10px !important;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.5) !important;
+        position: fixed !important;
+        top: 14px !important;
+        left: 14px !important;
         z-index: 999999 !important;
-        border: none !important;
+        background: #18181b !important;
+        border: 1px solid #3f3f46 !important;
+        border-radius: 8px !important;
+        padding: 8px !important;
+        cursor: pointer !important;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.3) !important;
+        transition: all 0.15s ease !important;
     }
     
-    [data-testid="stSidebarCollapsedControl"] button {
-        color: white !important;
-        background: transparent !important;
+    [data-testid="stSidebarCollapsedControl"]:hover {
+        background: #27272a !important;
+        border-color: #52525b !important;
     }
     
     [data-testid="stSidebarCollapsedControl"] svg {
-        color: white !important;
-        fill: white !important;
+        color: #a1a1aa !important;
+        width: 20px !important;
+        height: 20px !important;
     }
     
-    /* Mobile responsive */
-    @media (max-width: 768px) {
-        [data-testid="stSidebarCollapsedControl"] {
-            display: block !important;
-            visibility: visible !important;
-            position: fixed !important;
-            top: 10px !important;
-            left: 10px !important;
-            padding: 8px 12px !important;
-        }
-        
-        .brand-title { font-size: 20px !important; }
-        h1 { font-size: 24px !important; }
+    [data-testid="stSidebarCollapseButton"] {
+        display: flex !important;
+        visibility: visible !important;
     }
     
     section[data-testid="stSidebar"] {
-        background-color: #0f0f0f !important;
-        border-right: 1px solid #1f1f1f !important;
+        background-color: #09090b !important;
+        border-right: 1px solid #27272a !important;
+        width: 280px !important;
     }
     
     section[data-testid="stSidebar"] > div {
-        padding-top: 1.5rem;
+        padding: 1.5rem 1rem;
     }
     
     .stTextInput input, .stTextArea textarea, .stNumberInput input {
-        background-color: #141414 !important;
-        color: #ededed !important;
-        border: 1px solid #262626 !important;
+        background-color: #18181b !important;
+        color: #fafafa !important;
+        border: 1px solid #27272a !important;
         border-radius: 8px !important;
         padding: 10px 14px !important;
         font-size: 14px !important;
@@ -108,315 +100,166 @@ st.markdown("""
     
     .stTextInput input:focus, .stTextArea textarea:focus {
         border-color: #6366f1 !important;
-        box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+        box-shadow: 0 0 0 2px rgba(99,102,241,0.15) !important;
     }
     
     .stSelectbox > div > div {
-        background-color: #141414 !important;
-        border: 1px solid #262626 !important;
+        background-color: #18181b !important;
+        border: 1px solid #27272a !important;
         border-radius: 8px !important;
     }
     
     .stButton > button {
-        background-color: #1a1a1a !important;
-        color: #ededed !important;
-        border: 1px solid #2a2a2a !important;
+        background-color: #18181b !important;
+        color: #fafafa !important;
+        border: 1px solid #27272a !important;
         border-radius: 8px !important;
-        padding: 10px 18px !important;
+        padding: 10px 16px !important;
         font-size: 14px !important;
         font-weight: 500 !important;
         transition: all 0.15s ease !important;
     }
     
     .stButton > button:hover {
-        background-color: #252525 !important;
-        border-color: #3a3a3a !important;
-        transform: translateY(-1px);
+        background-color: #27272a !important;
+        border-color: #3f3f46 !important;
     }
     
     .stButton > button[kind="primary"] {
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        background: linear-gradient(135deg, #6366f1, #8b5cf6) !important;
         border: none !important;
         color: white !important;
         font-weight: 600 !important;
-        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.3) !important;
+        box-shadow: 0 2px 10px rgba(99,102,241,0.25) !important;
     }
     
     .stButton > button[kind="primary"]:hover {
-        box-shadow: 0 6px 20px rgba(99, 102, 241, 0.5) !important;
-        transform: translateY(-2px);
+        box-shadow: 0 4px 16px rgba(99,102,241,0.4) !important;
     }
     
     .stDownloadButton > button {
-        background-color: #1a1a1a !important;
-        color: #ededed !important;
-        border: 1px solid #2a2a2a !important;
+        background-color: #18181b !important;
+        color: #fafafa !important;
+        border: 1px solid #27272a !important;
         border-radius: 8px !important;
     }
     
     [data-testid="stMetric"] {
-        background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%) !important;
-        border: 1px solid #262626 !important;
+        background: #18181b !important;
+        border: 1px solid #27272a !important;
         border-radius: 10px !important;
-        padding: 16px !important;
+        padding: 14px !important;
     }
     
     [data-testid="stMetricLabel"] {
-        color: #a1a1a1 !important;
+        color: #71717a !important;
         font-size: 11px !important;
         font-weight: 600 !important;
         text-transform: uppercase;
-        letter-spacing: 0.08em;
+        letter-spacing: 0.06em;
     }
     
     [data-testid="stMetricValue"] {
-        color: #ededed !important;
-        font-size: 28px !important;
+        color: #fafafa !important;
+        font-size: 24px !important;
         font-weight: 700 !important;
     }
     
     .streamlit-expanderHeader {
-        background-color: #141414 !important;
-        border: 1px solid #262626 !important;
+        background-color: #18181b !important;
+        border: 1px solid #27272a !important;
         border-radius: 8px !important;
-        color: #ededed !important;
+        color: #fafafa !important;
         font-weight: 500 !important;
+        font-size: 14px !important;
     }
     
     .streamlit-expanderHeader:hover {
-        border-color: #6366f1 !important;
-        background-color: #1a1a1a !important;
+        border-color: #3f3f46 !important;
     }
     
     .streamlit-expanderContent {
-        background-color: #0f0f0f !important;
-        border: 1px solid #262626 !important;
+        background-color: #0f0f12 !important;
+        border: 1px solid #27272a !important;
         border-top: none !important;
         border-radius: 0 0 8px 8px !important;
-        padding: 20px !important;
+        padding: 16px !important;
     }
     
     .stAlert, div[data-baseweb="notification"] {
-        background-color: #141414 !important;
-        border: 1px solid #262626 !important;
+        background-color: #18181b !important;
+        border: 1px solid #27272a !important;
         border-radius: 8px !important;
-    }
-    
-    .stSuccess {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%) !important;
-        border-color: #10b981 !important;
-        color: #10b981 !important;
-    }
-    
-    .stError {
-        background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(239, 68, 68, 0.05) 100%) !important;
-        border-color: #ef4444 !important;
-        color: #ef4444 !important;
-    }
-    
-    .stWarning {
-        background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(245, 158, 11, 0.05) 100%) !important;
-        border-color: #f59e0b !important;
-        color: #f59e0b !important;
-    }
-    
-    .stInfo {
-        background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(99, 102, 241, 0.05) 100%) !important;
-        border-color: #6366f1 !important;
-        color: #a5b4fc !important;
     }
     
     .stTabs [data-baseweb="tab-list"] {
         background-color: transparent !important;
-        border-bottom: 1px solid #262626 !important;
-        gap: 4px;
+        border-bottom: 1px solid #27272a !important;
+        gap: 0;
     }
     
     .stTabs [data-baseweb="tab"] {
         background-color: transparent !important;
-        color: #737373 !important;
+        color: #71717a !important;
         font-weight: 500 !important;
-        padding: 12px 20px !important;
-        border-radius: 8px 8px 0 0 !important;
+        font-size: 14px !important;
+        padding: 12px 16px !important;
+        border: none !important;
+        border-radius: 0 !important;
     }
     
     .stTabs [aria-selected="true"] {
-        color: #ededed !important;
+        color: #fafafa !important;
         border-bottom: 2px solid #6366f1 !important;
-        background-color: rgba(99, 102, 241, 0.05) !important;
     }
     
     .stProgress > div > div {
-        background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%) !important;
+        background: linear-gradient(90deg, #6366f1, #8b5cf6) !important;
     }
     
-    hr {
-        border-color: #1f1f1f !important;
-        margin: 24px 0 !important;
-    }
+    hr { border-color: #27272a !important; }
     
-    code {
-        background-color: #1a1a1a !important;
-        color: #a5b4fc !important;
-        padding: 2px 6px !important;
-        border-radius: 4px !important;
-        font-family: 'JetBrains Mono', monospace !important;
-        font-size: 12px !important;
-    }
-    
-    ::-webkit-scrollbar { width: 8px; height: 8px; }
-    ::-webkit-scrollbar-track { background: #0a0a0a; }
-    ::-webkit-scrollbar-thumb { background: #262626; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #3a3a3a; }
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #27272a; border-radius: 3px; }
     
     .stImage img {
         border-radius: 8px !important;
-        border: 1px solid #262626 !important;
-    }
-    
-    .brand-title {
-        font-size: 24px;
-        font-weight: 800;
-        letter-spacing: -0.03em;
-        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    .brand-tag {
-        font-size: 12px;
-        color: #737373;
-        margin-top: -4px;
-    }
-    
-    .section-label {
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.1em;
-        color: #737373;
-        margin-bottom: 10px;
-    }
-    
-    .info-card {
-        background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
-        border: 1px solid #262626;
-        border-radius: 10px;
-        padding: 20px;
-    }
-    
-    .info-row {
-        display: grid;
-        grid-template-columns: 120px 1fr;
-        gap: 12px;
-        padding: 6px 0;
-        font-size: 14px;
-        border-bottom: 1px solid #1f1f1f;
-    }
-    
-    .info-row:last-child { border-bottom: none; }
-    .info-label { color: #737373; font-weight: 500; }
-    .info-value { color: #ededed; font-weight: 500; }
-    
-    .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 14px;
-        border-radius: 20px;
-        font-size: 12px;
-        font-weight: 500;
-    }
-    
-    .status-online {
-        background: rgba(16, 185, 129, 0.1);
-        border: 1px solid rgba(16, 185, 129, 0.3);
-        color: #10b981;
-    }
-    
-    .status-offline {
-        background: rgba(115, 115, 115, 0.1);
-        border: 1px solid rgba(115, 115, 115, 0.3);
-        color: #737373;
-    }
-    
-    .status-dot {
-        width: 6px; height: 6px; border-radius: 50%;
-    }
-    
-    .pulse-dot {
-        animation: pulse 2s ease-in-out infinite;
-    }
-    
-    @keyframes pulse {
-        0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.5); }
-        50% { opacity: 0.7; box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
-    }
-    
-    .option-row {
-        padding: 12px 16px;
-        margin: 6px 0;
-        background: #141414;
-        border: 1px solid #262626;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-    }
-    
-    .option-correct {
-        background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%);
-        border-color: #10b981;
-    }
-    
-    .option-marker {
-        width: 24px; height: 24px;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 12px;
-        font-weight: 700;
-    }
-    
-    .marker-correct { background: #10b981; color: white; }
-    .marker-normal { background: #262626; color: #a1a1a1; }
-    
-    .badge {
-        display: inline-block;
-        padding: 4px 10px;
-        border-radius: 6px;
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-        margin-right: 6px;
-    }
-    
-    .badge-easy { background: rgba(16, 185, 129, 0.15); color: #10b981; }
-    .badge-medium { background: rgba(245, 158, 11, 0.15); color: #f59e0b; }
-    .badge-hard { background: rgba(239, 68, 68, 0.15); color: #ef4444; }
-    .badge-verified { background: rgba(99, 102, 241, 0.15); color: #a5b4fc; }
-    
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        background: linear-gradient(135deg, #141414 0%, #1a1a1a 100%);
-        border: 1px dashed #262626;
-        border-radius: 12px;
+        border: 1px solid #27272a !important;
     }
     
     .stFileUploader > div {
-        background-color: #141414 !important;
-        border: 2px dashed #6366f1 !important;
-        border-radius: 12px !important;
-        padding: 20px !important;
+        background-color: #18181b !important;
+        border: 1px dashed #3f3f46 !important;
+        border-radius: 10px !important;
     }
     
-    .stFileUploader label {
-        color: #ededed !important;
-    }
+    .brand { font-size: 20px; font-weight: 800; letter-spacing: -0.03em; background: linear-gradient(135deg, #818cf8, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .brand-sub { font-size: 12px; color: #52525b; margin-top: 2px; }
+    .sec-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: #52525b; margin: 20px 0 8px 0; }
+    .card { background: #18181b; border: 1px solid #27272a; border-radius: 10px; padding: 16px; margin-bottom: 12px; }
+    .row { display: flex; justify-content: space-between; padding: 5px 0; font-size: 13px; border-bottom: 1px solid #1c1c1f; }
+    .row:last-child { border: none; }
+    .row-label { color: #71717a; }
+    .row-value { color: #fafafa; font-weight: 500; }
+    .pill { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+    .pill-on { background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.3); color: #22c55e; }
+    .pill-off { background: rgba(113,113,122,0.1); border: 1px solid rgba(113,113,122,0.3); color: #71717a; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; display: inline-block; }
+    .dot-g { background: #22c55e; animation: blink 2s infinite; }
+    .dot-r { background: #71717a; }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.5} }
+    .opt { padding: 10px 14px; margin: 4px 0; background: #18181b; border: 1px solid #27272a; border-radius: 8px; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+    .opt-ok { background: rgba(34,197,94,0.06); border-color: rgba(34,197,94,0.3); }
+    .mark { width: 22px; height: 22px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+    .mark-ok { background: #22c55e; color: white; }
+    .mark-no { background: #27272a; color: #71717a; }
+    .tag { display: inline-block; padding: 3px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; margin-right: 4px; }
+    .tag-e { background: rgba(34,197,94,0.12); color: #22c55e; }
+    .tag-m { background: rgba(234,179,8,0.12); color: #eab308; }
+    .tag-h { background: rgba(239,68,68,0.12); color: #ef4444; }
+    .tag-t { background: rgba(99,102,241,0.12); color: #818cf8; }
+    .empty { text-align: center; padding: 50px 20px; background: #18181b; border: 1px dashed #27272a; border-radius: 10px; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -428,20 +271,12 @@ if "verify_results" not in st.session_state:
     st.session_state.verify_results = {}
 
 with st.sidebar:
-    st.markdown('<div class="brand-title">◆ NEET Studio</div>', unsafe_allow_html=True)
-    st.markdown('<div class="brand-tag">AI question generation</div>', unsafe_allow_html=True)
+    st.markdown('<div class="brand">◆ NEET Studio</div>', unsafe_allow_html=True)
+    st.markdown('<div class="brand-sub">Question generation platform</div>', unsafe_allow_html=True)
     
-    st.markdown("<div style='height: 28px'></div>", unsafe_allow_html=True)
+    st.markdown('<div class="sec-label">API Key</div>', unsafe_allow_html=True)
     
-    st.markdown('<div class="section-label">Configuration</div>', unsafe_allow_html=True)
-    
-    api_key = st.text_input(
-        "API Key",
-        type="password",
-        value=os.getenv("GEMINI_API_KEY", ""),
-        placeholder="Paste your Gemini API key",
-        label_visibility="collapsed"
-    )
+    api_key = st.text_input("key", type="password", placeholder="Paste Gemini API key", label_visibility="collapsed")
     
     if st.button("Connect", type="primary", use_container_width=True):
         if api_key:
@@ -449,533 +284,339 @@ with st.sidebar:
                 setup_ai(api_key)
                 st.session_state.ai_ready = True
                 st.success("Connected")
-            except Exception as e:
+            except:
                 st.error("Failed")
         else:
             st.error("Key required")
     
-    st.markdown("<div style='height: 10px'></div>", unsafe_allow_html=True)
-    
     if st.session_state.ai_ready:
-        st.markdown(
-            '<div class="status-pill status-online"><span class="status-dot pulse-dot" style="background: #10b981;"></span>System Online</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown('<div class="pill pill-on"><span class="dot dot-g"></span>Online</div>', unsafe_allow_html=True)
     else:
-        st.markdown(
-            '<div class="status-pill status-offline"><span class="status-dot" style="background: #737373;"></span>Offline</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown('<div class="pill pill-off"><span class="dot dot-r"></span>Offline</div>', unsafe_allow_html=True)
     
-    st.markdown("<div style='height: 32px'></div>", unsafe_allow_html=True)
-    
-    st.markdown('<div class="section-label">Library</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sec-label">Library</div>', unsafe_allow_html=True)
     
     books = scan_books()
-    
     c1, c2 = st.columns(2)
     with c1:
-        st.metric("Biology", len(books['biology']))
-        st.metric("Chemistry", len(books['chemistry']))
+        st.metric("Bio", len(books['biology']))
+        st.metric("Chem", len(books['chemistry']))
     with c2:
-        st.metric("Physics", len(books['physics']))
-        st.metric("PYQs", len(books['pyq']))
+        st.metric("Phy", len(books['physics']))
+        st.metric("PYQ", len(books['pyq']))
     
     total = sum(len(v) for v in books.values())
-    st.markdown(f'<div style="text-align: center; margin-top: 12px; color: #737373; font-size: 12px;">Total: <span style="color: #ededed; font-weight: 600;">{total}</span> files indexed</div>', unsafe_allow_html=True)
+    st.caption(f"Total: {total} files")
     
-    st.markdown("<div style='height: 32px'></div>", unsafe_allow_html=True)
-    
-    st.markdown('<div class="section-label">Resources</div>', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 13px; color: #a1a1a1;">🔑 <a href="https://aistudio.google.com/apikey" style="color: #a5b4fc; text-decoration: none;" target="_blank">Get Free API Key</a></div>', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 13px; color: #a1a1a1; margin-top: 4px;">📖 <a href="https://ncert.nic.in/textbook.php" style="color: #a5b4fc; text-decoration: none;" target="_blank">Download NCERT PDFs</a></div>', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 13px; color: #a1a1a1; margin-top: 4px;">💡 Free tier: 1500 req/day</div>', unsafe_allow_html=True)
-    st.markdown('<div style="font-size: 12px; color: #525252; margin-top: 16px;">Version 6.0</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sec-label">Links</div>', unsafe_allow_html=True)
+    st.markdown("[🔑 Get API Key](https://aistudio.google.com/apikey)")
+    st.markdown("[📖 NCERT PDFs](https://ncert.nic.in/textbook.php)")
+    st.caption("v6.0 · Free forever")
 
 st.markdown("# NEET Question Studio")
-st.markdown('<div style="color: #a1a1a1; font-size: 15px; margin-top: -8px;">Generate NEET-level questions from NCERT PDFs using AI</div>', unsafe_allow_html=True)
-
-st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
+st.caption("Generate NEET-level questions from NCERT PDFs using AI")
 
 if not st.session_state.ai_ready:
-    st.info("👋 Welcome! Please add your free Gemini API key in the sidebar to get started. Tap the ▶ button on top-left if sidebar is hidden.")
+    st.info("👋 Tap the ☰ menu button (top-left) to open sidebar and add your API key.")
     
-    st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    with c1:
+        st.markdown('<div class="card"><div style="font-size:24px;margin-bottom:8px;">⚡</div><div style="font-weight:600;font-size:14px;">Fast</div><div style="color:#71717a;font-size:12px;margin-top:4px;">30 questions in 60 seconds</div></div>', unsafe_allow_html=True)
+    with c2:
+        st.markdown('<div class="card"><div style="font-size:24px;margin-bottom:8px;">🎯</div><div style="font-weight:600;font-size:14px;">Verified</div><div style="color:#71717a;font-size:12px;margin-top:4px;">AI double-checks every answer</div></div>', unsafe_allow_html=True)
+    with c3:
+        st.markdown('<div class="card"><div style="font-size:24px;margin-bottom:8px;">🌐</div><div style="font-weight:600;font-size:14px;">Bilingual</div><div style="color:#71717a;font-size:12px;margin-top:4px;">English + Hindi output</div></div>', unsafe_allow_html=True)
     
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.markdown("""
-        <div class="info-card">
-            <div style="font-size: 28px; margin-bottom: 8px;">⚡</div>
-            <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">Fast Generation</div>
-            <div style="color: #a1a1a1; font-size: 13px;">Generate up to 30 questions in under a minute</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col2:
-        st.markdown("""
-        <div class="info-card">
-            <div style="font-size: 28px; margin-bottom: 8px;">🎯</div>
-            <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">Answer Verification</div>
-            <div style="color: #a1a1a1; font-size: 13px;">Built-in AI verification for accuracy check</div>
-        </div>
-        """, unsafe_allow_html=True)
-    with col3:
-        st.markdown("""
-        <div class="info-card">
-            <div style="font-size: 28px; margin-bottom: 8px;">🌐</div>
-            <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">Bilingual Output</div>
-            <div style="color: #a1a1a1; font-size: 13px;">Both English and Hindi versions included</div>
-        </div>
-        """, unsafe_allow_html=True)
-    
-    st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
-    
-    st.markdown("### 🚀 Quick Start Guide")
-    st.markdown("""
-    1. **Get API Key** - Click the link in sidebar to get your free Gemini key
-    2. **Connect** - Paste key and click Connect button
-    3. **Select Chapter** - Choose from pre-loaded NCERT library
-    4. **Generate** - Get NEET-level questions instantly!
-    """)
-    
+    st.markdown("### How to use")
+    st.markdown("1. Get free API key → [aistudio.google.com/apikey](https://aistudio.google.com/apikey)")
+    st.markdown("2. Open sidebar (☰ top-left) → paste key → Connect")
+    st.markdown("3. Upload PDFs or use pre-loaded library")
+    st.markdown("4. Select chapter → Generate!")
     st.stop()
 
-tab1, tab2, tab3, tab4 = st.tabs(["✨ Generate", "📁 Upload PDFs", "📚 History", "🖼️ Diagrams"])
+tab1, tab2, tab3, tab4 = st.tabs(["Generate", "Upload", "History", "Diagrams"])
 
 with tab1:
-    if sum(len(v) for v in books.values()) == 0:
-        st.markdown("""
-        <div class="empty-state">
-            <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
-            <h3 style="margin: 0 0 8px 0;">No PDFs uploaded yet</h3>
-            <p style="color: #a1a1a1; margin: 0;">Go to the <strong>Upload PDFs</strong> tab to add your NCERT books</p>
-        </div>
-        """, unsafe_allow_html=True)
+    if total == 0:
+        st.markdown('<div class="empty"><div style="font-size:40px;margin-bottom:12px;">📚</div><h3>No PDFs yet</h3><p style="color:#71717a;">Go to Upload tab to add NCERT books</p></div>', unsafe_allow_html=True)
         st.stop()
     
-    col_left, col_right = st.columns([1, 1], gap="large")
+    c_l, c_r = st.columns([1, 1], gap="large")
     
-    with col_left:
-        st.markdown('<div class="section-label">Parameters</div>', unsafe_allow_html=True)
+    with c_l:
+        st.markdown('<div class="sec-label">Parameters</div>', unsafe_allow_html=True)
         
-        available_subjects = [s.title() for s in ["Biology", "Physics", "Chemistry"] if books[s.lower()]]
-        
-        if not available_subjects:
-            st.error("No subject PDFs available. Please upload PDFs first.")
+        avail = [s.title() for s in ["biology", "physics", "chemistry"] if books[s]]
+        if not avail:
+            st.error("No PDFs. Upload first.")
             st.stop()
         
-        subject = st.selectbox("Subject", available_subjects)
-        sub_key = subject.lower()
-        pdfs = books[sub_key]
+        subject = st.selectbox("Subject", avail)
+        pdfs = books[subject.lower()]
         
-        chapter_options = [f"{i+1}. {get_chapter_name(p)}" for i, p in enumerate(pdfs)]
-        chapter_choice = st.selectbox("Chapter", chapter_options)
-        chapter_idx = int(chapter_choice.split(".")[0]) - 1
-        pdf_file = pdfs[chapter_idx]
-        chapter_name = get_chapter_name(pdf_file)
+        ch_opts = [f"{i+1}. {get_chapter_name(p)}" for i, p in enumerate(pdfs)]
+        ch_pick = st.selectbox("Chapter", ch_opts)
+        ch_idx = int(ch_pick.split(".")[0]) - 1
+        pdf_file = pdfs[ch_idx]
+        ch_name = get_chapter_name(pdf_file)
         
-        topic = st.text_input("Topic", placeholder="e.g., photosynthesis (optional)")
+        topic = st.text_input("Topic (optional)", placeholder="e.g. photosynthesis")
         
-        qtype = st.selectbox("Question Type", [
-            "General MCQ", "Assertion & Reason", "Statement Based",
-            "Match the Following", "Image Question", "Graphical"
-        ])
+        qtype = st.selectbox("Type", ["General MCQ", "Assertion & Reason", "Statement Based", "Match the Following", "Image Question", "Graphical"])
         
         ca, cb = st.columns(2)
         with ca:
-            difficulty = st.selectbox("Difficulty", ["Easy", "Medium", "Hard"], index=1)
+            diff = st.selectbox("Difficulty", ["Easy", "Medium", "Hard"], index=1)
         with cb:
-            num_q = st.number_input("Count", min_value=1, max_value=30, value=10)
+            num_q = st.number_input("Count", 1, 30, 10)
         
         use_pyq = False
         if books["pyq"] and topic:
-            use_pyq = st.checkbox(f"Include PYQ references ({len(books['pyq'])})")
-        
-        if qtype in ["Image Question", "Graphical"]:
-            st.info("💡 Use the Diagrams tab to browse NCERT figures")
+            use_pyq = st.checkbox(f"Use PYQs ({len(books['pyq'])})")
     
-    with col_right:
-        st.markdown('<div class="section-label">Summary</div>', unsafe_allow_html=True)
+    with c_r:
+        st.markdown('<div class="sec-label">Summary</div>', unsafe_allow_html=True)
         
-        diff_badge = f'<span class="badge badge-{difficulty.lower()}">{difficulty}</span>'
+        d_class = f"tag-{diff[0].lower()}"
         
         st.markdown(f"""
-        <div class="info-card">
-            <div style="margin-bottom: 16px;">{diff_badge}<span class="badge badge-verified">{qtype}</span></div>
-            <div class="info-row"><div class="info-label">Subject</div><div class="info-value">{subject}</div></div>
-            <div class="info-row"><div class="info-label">Chapter</div><div class="info-value">{chapter_name}</div></div>
-            <div class="info-row"><div class="info-label">Topic</div><div class="info-value">{topic if topic else 'Full chapter'}</div></div>
-            <div class="info-row"><div class="info-label">Quantity</div><div class="info-value">{num_q} questions</div></div>
-            <div class="info-row"><div class="info-label">PYQ Ref</div><div class="info-value">{'Yes' if use_pyq else 'No'}</div></div>
+        <div class="card">
+            <div style="margin-bottom:12px;"><span class="tag {d_class}">{diff}</span><span class="tag tag-t">{qtype}</span></div>
+            <div class="row"><span class="row-label">Subject</span><span class="row-value">{subject}</span></div>
+            <div class="row"><span class="row-label">Chapter</span><span class="row-value">{ch_name[:25]}</span></div>
+            <div class="row"><span class="row-label">Topic</span><span class="row-value">{topic if topic else 'Full chapter'}</span></div>
+            <div class="row"><span class="row-label">Count</span><span class="row-value">{num_q}</span></div>
+            <div class="row"><span class="row-label">PYQ</span><span class="row-value">{'Yes' if use_pyq else 'No'}</span></div>
         </div>
         """, unsafe_allow_html=True)
         
-        st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
-        
-        if st.button("✨ Generate Questions", type="primary", use_container_width=True):
-            with st.spinner("🤖 AI is crafting your questions..."):
-                result = generate_questions(pdf_file, chapter_name, qtype, difficulty, num_q, topic, use_pyq)
-            
-            if result.get("success"):
-                st.session_state.generated = result["data"]
+        if st.button("✨ Generate", type="primary", use_container_width=True):
+            with st.spinner("Generating questions..."):
+                res = generate_questions(pdf_file, ch_name, qtype, diff, num_q, topic, use_pyq)
+            if res.get("success"):
+                st.session_state.generated = res["data"]
                 st.session_state.verify_results = {}
-                st.success(f"✅ Generated {result['count']} questions successfully")
+                st.success(f"✅ {res['count']} questions generated")
             else:
-                st.error(f"❌ {result.get('error')}")
+                st.error(f"❌ {res.get('error')}")
     
     if st.session_state.generated:
-        st.markdown("<div style='height: 32px'></div>", unsafe_allow_html=True)
         st.markdown("---")
         
-        questions = st.session_state.generated.get("questions", [])
+        qs = st.session_state.generated.get("questions", [])
+        vc = sum(1 for i in range(len(qs)) if st.session_state.verify_results.get(i, {}).get("matches"))
         
-        col_h1, col_h2 = st.columns([3, 1])
-        with col_h1:
-            st.markdown(f"### Generated Results")
-            st.caption(f"{len(questions)} questions ready. Verify each before using on TrackPrep.")
-        with col_h2:
-            verified_count = sum(1 for i in range(len(questions)) if st.session_state.verify_results.get(i, {}).get("matches"))
-            st.metric("Verified", f"{verified_count}/{len(questions)}")
+        h1, h2 = st.columns([3, 1])
+        with h1:
+            st.markdown("### Results")
+            st.caption(f"{len(qs)} questions · {vc} verified")
+        with h2:
+            st.metric("Verified", f"{vc}/{len(qs)}")
         
-        st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
-        
-        for i, q in enumerate(questions):
-            verify_data = st.session_state.verify_results.get(i, {})
+        for i, q in enumerate(qs):
+            vd = st.session_state.verify_results.get(i, {})
+            icon = ""
+            if vd.get("matches") and vd.get("confidence", 0) >= 80:
+                icon = "✅ "
+            elif vd.get("verified") and not vd.get("matches"):
+                icon = "⚠️ "
             
-            status_icon = ""
-            if verify_data.get("matches") and verify_data.get("confidence", 0) >= 80:
-                status_icon = "✅ "
-            elif verify_data.get("verified") and not verify_data.get("matches"):
-                status_icon = "⚠️ "
-            
-            with st.expander(f"{status_icon}Question {i+1}  ·  {q.get('question_english', '')[:75]}..."):
+            with st.expander(f"{icon}Q{i+1} · {q.get('question_english','')[:70]}..."):
+                t1, t2 = st.tabs(["English", "हिन्दी"])
                 
-                lt1, lt2 = st.tabs(["🇬🇧 English", "🇮🇳 हिन्दी"])
-                
-                with lt1:
-                    st.markdown(f"**{q.get('question_english', '')}**")
-                    st.markdown("")
-                    
+                with t1:
+                    st.markdown(f"**{q.get('question_english','')}**")
                     correct = q.get('correct_answer', '')
-                    options = ['A', 'B', 'C', 'D']
-                    keys = ['option_a_english', 'option_b_english', 'option_c_english', 'option_d_english']
-                    
-                    for opt, key in zip(options, keys):
-                        is_correct = opt == correct
-                        row_class = "option-row option-correct" if is_correct else "option-row"
-                        marker_class = "option-marker marker-correct" if is_correct else "option-marker marker-normal"
-                        st.markdown(
-                            f'<div class="{row_class}">'
-                            f'<span class="{marker_class}">{opt}</span>'
-                            f'<span>{q.get(key, "")}</span>'
-                            f'</div>',
-                            unsafe_allow_html=True
-                        )
-                    
+                    for opt, key in zip(['A','B','C','D'], ['option_a_english','option_b_english','option_c_english','option_d_english']):
+                        ok = opt == correct
+                        rc = "opt opt-ok" if ok else "opt"
+                        mc = "mark mark-ok" if ok else "mark mark-no"
+                        st.markdown(f'<div class="{rc}"><span class="{mc}">{opt}</span><span>{q.get(key,"")}</span></div>', unsafe_allow_html=True)
                     st.markdown("")
-                    st.markdown("**💡 Explanation**")
-                    st.markdown(q.get('explanation_english', ''))
+                    st.info(f"💡 {q.get('explanation_english','')}")
                 
-                with lt2:
-                    st.markdown(f"**{q.get('question_hindi', '')}**")
+                with t2:
+                    st.markdown(f"**{q.get('question_hindi','')}**")
+                    for opt, key in zip(['A','B','C','D'], ['option_a_hindi','option_b_hindi','option_c_hindi','option_d_hindi']):
+                        ok = opt == correct
+                        rc = "opt opt-ok" if ok else "opt"
+                        mc = "mark mark-ok" if ok else "mark mark-no"
+                        st.markdown(f'<div class="{rc}"><span class="{mc}">{opt}</span><span>{q.get(key,"")}</span></div>', unsafe_allow_html=True)
                     st.markdown("")
-                    
-                    keys_hi = ['option_a_hindi', 'option_b_hindi', 'option_c_hindi', 'option_d_hindi']
-                    for opt, key in zip(options, keys_hi):
-                        is_correct = opt == correct
-                        row_class = "option-row option-correct" if is_correct else "option-row"
-                        marker_class = "option-marker marker-correct" if is_correct else "option-marker marker-normal"
-                        st.markdown(
-                            f'<div class="{row_class}">'
-                            f'<span class="{marker_class}">{opt}</span>'
-                            f'<span>{q.get(key, "")}</span>'
-                            f'</div>',
-                            unsafe_allow_html=True
-                        )
-                    
-                    st.markdown("")
-                    st.markdown("**💡 व्याख्या**")
-                    st.markdown(q.get('explanation_hindi', ''))
+                    st.info(f"💡 {q.get('explanation_hindi','')}")
                 
                 st.markdown("---")
-                st.markdown("**🛠️ Quality Tools**")
                 
-                qc1, qc2, qc3 = st.columns(3)
-                
-                with qc1:
-                    if st.button("🔍 Verify Answer", key=f"vrf_{i}", use_container_width=True):
-                        with st.spinner("Verifying..."):
-                            result = verify_answer(q)
-                            st.session_state.verify_results[i] = result
+                b1, b2, b3 = st.columns(3)
+                with b1:
+                    if st.button("🔍 Verify", key=f"v_{i}", use_container_width=True):
+                        with st.spinner("..."):
+                            r = verify_answer(q)
+                            st.session_state.verify_results[i] = r
                         st.rerun()
-                
-                with qc2:
-                    if st.button("✍️ Humanize", key=f"hum_{i}", use_container_width=True):
-                        with st.spinner("Rewriting..."):
-                            humanized = humanize_question(q)
-                            st.session_state.generated["questions"][i] = humanized
+                with b2:
+                    if st.button("✍️ Humanize", key=f"h_{i}", use_container_width=True):
+                        with st.spinner("..."):
+                            h = humanize_question(q)
+                            st.session_state.generated["questions"][i] = h
                         st.rerun()
+                with b3:
+                    if st.button("ℹ️ Meta", key=f"m_{i}", use_container_width=True):
+                        st.session_state[f"sm_{i}"] = not st.session_state.get(f"sm_{i}", False)
                 
-                with qc3:
-                    if st.button("📋 View Meta", key=f"mta_{i}", use_container_width=True):
-                        st.session_state[f"show_meta_{i}"] = not st.session_state.get(f"show_meta_{i}", False)
+                if vd:
+                    cf = vd.get("confidence", 0)
+                    if vd.get("matches") and cf >= 80:
+                        st.success(f"✅ Verified · {cf}% confidence")
+                    elif vd.get("matches") and cf >= 60:
+                        st.warning(f"⚠️ Likely correct · {cf}%")
+                    elif vd.get("verified"):
+                        st.error(f"❌ Mismatch · AI says: {vd.get('ai_answer')}")
                 
-                if verify_data:
-                    conf = verify_data.get("confidence", 0)
-                    if verify_data.get("matches") and conf >= 80:
-                        st.success(f"✅ Verified · Confidence: {conf}% · Safe to use")
-                    elif verify_data.get("matches") and conf >= 60:
-                        st.warning(f"⚠️ Likely correct · Confidence: {conf}% · Manual check recommended")
-                    elif verify_data.get("verified"):
-                        st.error(f"❌ Answer mismatch · AI suggests: {verify_data.get('ai_answer')} · Not: {q.get('correct_answer')}")
-                        if verify_data.get("notes"):
-                            st.caption(f"Note: {verify_data.get('notes')}")
-                    else:
-                        st.error("Verification failed. Try again.")
-                
-                if st.session_state.get(f"show_meta_{i}", False):
-                    st.markdown("")
-                    st.markdown(f"""
-                    <div class="info-card">
-                        <div class="info-row"><div class="info-label">Topic</div><div class="info-value">{q.get('topic', 'N/A')}</div></div>
-                        <div class="info-row"><div class="info-label">Subtopic</div><div class="info-value">{q.get('subtopic', 'N/A')}</div></div>
-                        <div class="info-row"><div class="info-label">NCERT Ref</div><div class="info-value">{q.get('ncert_reference', 'N/A')}</div></div>
-                        <div class="info-row"><div class="info-label">Common Mistake</div><div class="info-value">{q.get('common_mistake', 'N/A')}</div></div>
-                    </div>
-                    """, unsafe_allow_html=True)
+                if st.session_state.get(f"sm_{i}", False):
+                    st.caption(f"Topic: {q.get('topic','')} · Subtopic: {q.get('subtopic','')}")
+                    st.caption(f"NCERT: {q.get('ncert_reference','')} · Mistake: {q.get('common_mistake','')}")
                 
                 st.markdown("---")
-                st.markdown("**📋 Copy for TrackPrep**")
-                
-                cc1, cc2 = st.columns(2)
-                with cc1:
-                    eng_text = f"""Q: {q.get('question_english', '')}
-A) {q.get('option_a_english', '')}
-B) {q.get('option_b_english', '')}
-C) {q.get('option_c_english', '')}
-D) {q.get('option_d_english', '')}
-Answer: {q.get('correct_answer', '')}
-Explanation: {q.get('explanation_english', '')}"""
-                    st.text_area("English", eng_text, height=180, key=f"eng_{i}", label_visibility="collapsed")
-                
-                with cc2:
-                    hin_text = f"""प्रश्न: {q.get('question_hindi', '')}
-A) {q.get('option_a_hindi', '')}
-B) {q.get('option_b_hindi', '')}
-C) {q.get('option_c_hindi', '')}
-D) {q.get('option_d_hindi', '')}
-उत्तर: {q.get('correct_answer', '')}
-व्याख्या: {q.get('explanation_hindi', '')}"""
-                    st.text_area("Hindi", hin_text, height=180, key=f"hin_{i}", label_visibility="collapsed")
+                st.markdown("**Copy for TrackPrep**")
+                e1, e2 = st.columns(2)
+                with e1:
+                    et = f"Q: {q.get('question_english','')}\nA) {q.get('option_a_english','')}\nB) {q.get('option_b_english','')}\nC) {q.get('option_c_english','')}\nD) {q.get('option_d_english','')}\nAnswer: {q.get('correct_answer','')}\nExplanation: {q.get('explanation_english','')}"
+                    st.text_area("EN", et, height=160, key=f"e_{i}", label_visibility="collapsed")
+                with e2:
+                    ht = f"प्रश्न: {q.get('question_hindi','')}\nA) {q.get('option_a_hindi','')}\nB) {q.get('option_b_hindi','')}\nC) {q.get('option_c_hindi','')}\nD) {q.get('option_d_hindi','')}\nउत्तर: {q.get('correct_answer','')}\nव्याख्या: {q.get('explanation_hindi','')}"
+                    st.text_area("HI", ht, height=160, key=f"hi_{i}", label_visibility="collapsed")
 
 with tab2:
-    st.markdown('<div class="section-label">Upload NCERT PDFs</div>', unsafe_allow_html=True)
-    st.caption("Upload your NCERT PDFs to build your personal library")
+    st.markdown("### Upload PDFs")
+    st.caption("Add NCERT books to your library")
     
-    st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
+    cat = st.selectbox("Category", ["biology", "physics", "chemistry", "pyq", "other"])
     
-    st.info("💡 **Tip:** Name your files clearly (e.g., `ncert_bio11_ch01_living_world.pdf`) for better organization")
+    files = st.file_uploader("Choose PDFs", type=["pdf"], accept_multiple_files=True)
     
-    category = st.selectbox(
-        "PDF Category",
-        ["biology", "physics", "chemistry", "pyq", "other"],
-        help="Select the subject category for the PDF"
-    )
-    
-    uploaded_files = st.file_uploader(
-        "Choose PDF files",
-        type=["pdf"],
-        accept_multiple_files=True,
-        help="Upload one or more PDF files"
-    )
-    
-    if uploaded_files:
-        if st.button("📤 Upload All", type="primary", use_container_width=True):
-            success_count = 0
-            for uploaded_file in uploaded_files:
+    if files:
+        if st.button("📤 Upload", type="primary", use_container_width=True):
+            ok = 0
+            for f in files:
                 try:
-                    save_uploaded_pdf(uploaded_file, category)
-                    success_count += 1
-                except Exception as e:
-                    st.error(f"Failed to upload {uploaded_file.name}: {e}")
-            
-            if success_count > 0:
-                st.success(f"✅ Successfully uploaded {success_count} PDF(s)")
+                    save_uploaded_pdf(f, cat)
+                    ok += 1
+                except:
+                    st.error(f"Failed: {f.name}")
+            if ok:
+                st.success(f"✅ Uploaded {ok} file(s)")
                 st.rerun()
     
     st.markdown("---")
+    st.markdown("### Your Library")
     
-    st.markdown('<div class="section-label">Your Library</div>', unsafe_allow_html=True)
-    
-    books_current = scan_books()
-    
-    if sum(len(v) for v in books_current.values()) == 0:
-        st.markdown("""
-        <div class="empty-state">
-            <div style="font-size: 48px; margin-bottom: 16px;">📁</div>
-            <h3 style="margin: 0 0 8px 0;">Library is empty</h3>
-            <p style="color: #a1a1a1; margin: 0;">Upload some PDFs above to get started</p>
-        </div>
-        """, unsafe_allow_html=True)
+    bk = scan_books()
+    if sum(len(v) for v in bk.values()) == 0:
+        st.markdown('<div class="empty"><div style="font-size:40px;margin-bottom:12px;">📁</div><h3>Empty</h3><p style="color:#71717a;">Upload PDFs above</p></div>', unsafe_allow_html=True)
     else:
-        for cat, pdfs_list in books_current.items():
-            if pdfs_list:
-                st.markdown(f"**{cat.title()}** ({len(pdfs_list)} files)")
-                for pdf in pdfs_list:
-                    col_p1, col_p2 = st.columns([5, 1])
-                    with col_p1:
-                        st.markdown(f"📄 `{pdf}`")
-                    with col_p2:
-                        if st.button("🗑️", key=f"del_{pdf}", use_container_width=True):
-                            delete_pdf(pdf)
+        for cat_name, pdf_list in bk.items():
+            if pdf_list:
+                st.markdown(f"**{cat_name.title()}** ({len(pdf_list)})")
+                for p in pdf_list:
+                    p1, p2 = st.columns([5, 1])
+                    with p1:
+                        st.caption(f"📄 {p}")
+                    with p2:
+                        if st.button("✕", key=f"d_{p}"):
+                            delete_pdf(p)
                             st.rerun()
-                st.markdown("")
 
 with tab3:
-    st.markdown('<div class="section-label">Question History</div>', unsafe_allow_html=True)
-    st.caption("Browse and download previously generated question sets")
+    st.markdown("### History")
+    st.caption("Previous question sets")
     
-    st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
-    
-    output_dir = "output"
-    if os.path.exists(output_dir):
-        files = sorted([f for f in os.listdir(output_dir) if f.endswith(".json")], reverse=True)
-        
-        if not files:
-            st.info("📭 No question sets yet. Generate some in the Generate tab.")
+    odir = "output"
+    if os.path.exists(odir):
+        fl = sorted([f for f in os.listdir(odir) if f.endswith(".json")], reverse=True)
+        if not fl:
+            st.info("No history yet. Generate some questions first.")
         else:
-            selected_file = st.selectbox("Select file", files)
-            
-            if selected_file:
-                filepath = os.path.join(output_dir, selected_file)
-                with open(filepath, "r", encoding="utf-8") as f:
+            sf = st.selectbox("File", fl)
+            if sf:
+                fp = os.path.join(odir, sf)
+                with open(fp, "r", encoding="utf-8") as f:
                     data = json.load(f)
+                qs = data.get("questions", [])
                 
-                questions = data.get("questions", [])
+                x1, x2 = st.columns([2, 1])
+                with x1:
+                    st.success(f"{len(qs)} questions")
+                with x2:
+                    with open(fp, "r", encoding="utf-8") as f:
+                        st.download_button("💾 Download", f.read(), file_name=sf, use_container_width=True)
                 
-                cl1, cl2, cl3 = st.columns([2, 1, 1])
-                with cl1:
-                    st.success(f"📄 {len(questions)} questions loaded")
-                with cl2:
-                    with open(filepath, "r", encoding="utf-8") as f:
-                        st.download_button("💾 JSON", f.read(), file_name=selected_file, use_container_width=True)
-                with cl3:
-                    txt_file = filepath.replace(".json", ".txt")
-                    if os.path.exists(txt_file):
-                        with open(txt_file, "r", encoding="utf-8") as f:
-                            st.download_button("📄 TXT", f.read(), file_name=selected_file.replace(".json", ".txt"), use_container_width=True)
-                
-                st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
-                
-                for i, q in enumerate(questions):
-                    with st.expander(f"Q{i+1}  ·  {q.get('question_english', '')[:70]}..."):
-                        st.markdown(f"**{q.get('question_english', '')}**")
-                        st.markdown("")
-                        
+                for i, q in enumerate(qs):
+                    with st.expander(f"Q{i+1} · {q.get('question_english','')[:60]}..."):
+                        st.markdown(f"**{q.get('question_english','')}**")
                         correct = q.get('correct_answer', '')
-                        options = ['A', 'B', 'C', 'D']
-                        keys = ['option_a_english', 'option_b_english', 'option_c_english', 'option_d_english']
-                        
-                        for opt, key in zip(options, keys):
-                            is_correct = opt == correct
-                            row_class = "option-row option-correct" if is_correct else "option-row"
-                            marker_class = "option-marker marker-correct" if is_correct else "option-marker marker-normal"
-                            st.markdown(
-                                f'<div class="{row_class}">'
-                                f'<span class="{marker_class}">{opt}</span>'
-                                f'<span>{q.get(key, "")}</span>'
-                                f'</div>',
-                                unsafe_allow_html=True
-                            )
-                        
-                        st.markdown("")
+                        for opt, key in zip(['A','B','C','D'], ['option_a_english','option_b_english','option_c_english','option_d_english']):
+                            ok = opt == correct
+                            rc = "opt opt-ok" if ok else "opt"
+                            mc = "mark mark-ok" if ok else "mark mark-no"
+                            st.markdown(f'<div class="{rc}"><span class="{mc}">{opt}</span><span>{q.get(key,"")}</span></div>', unsafe_allow_html=True)
                         st.info(q.get('explanation_english', ''))
     else:
-        st.info("📁 Generate some questions first to see them here.")
+        st.info("Generate questions first.")
 
 with tab4:
-    st.markdown('<div class="section-label">NCERT Diagram Extractor</div>', unsafe_allow_html=True)
-    st.caption("Extract and browse figures directly from your uploaded NCERT PDFs")
+    st.markdown("### Diagrams")
+    st.caption("Extract figures from NCERT PDFs")
     
-    st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
-    
-    if sum(len(v) for v in books.values()) == 0:
-        st.markdown("""
-        <div class="empty-state">
-            <div style="font-size: 48px; margin-bottom: 16px;">📚</div>
-            <h3 style="margin: 0 0 8px 0;">No PDFs to extract from</h3>
-            <p style="color: #a1a1a1; margin: 0;">Upload PDFs first in the Upload PDFs tab</p>
-        </div>
-        """, unsafe_allow_html=True)
+    if total == 0:
+        st.markdown('<div class="empty"><div style="font-size:40px;margin-bottom:12px;">🖼️</div><h3>No PDFs</h3><p style="color:#71717a;">Upload PDFs first</p></div>', unsafe_allow_html=True)
     else:
-        total_books, total_images = get_all_extracted_count()
-        
-        ds1, ds2, ds3 = st.columns([1, 1, 1])
-        with ds1:
-            st.metric("Books Indexed", total_books)
-        with ds2:
-            st.metric("Diagrams Available", total_images)
-        with ds3:
-            st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
-            if st.button("🔄 Extract All PDFs", type="primary", use_container_width=True):
-                with st.spinner("Processing PDFs..."):
-                    progress_bar = st.progress(0)
-                    status = st.empty()
-                    
-                    def update(current, total, name):
-                        progress_bar.progress(current / total)
-                        status.caption(f"⚙️ Processing {current}/{total}: {name}")
-                    
-                    result = extract_all_books(progress_callback=update)
-                    total = sum(len(imgs) for imgs in result.values())
-                    st.success(f"✅ Extracted {total} diagrams from {len(result)} books")
+        tb, ti = get_all_extracted_count()
+        d1, d2, d3 = st.columns(3)
+        with d1:
+            st.metric("Books", tb)
+        with d2:
+            st.metric("Images", ti)
+        with d3:
+            if st.button("🔄 Extract All", type="primary", use_container_width=True):
+                with st.spinner("Extracting..."):
+                    pb = st.progress(0)
+                    sx = st.empty()
+                    def upd(c, t, n):
+                        pb.progress(c / t)
+                        sx.caption(f"{c}/{t}: {n}")
+                    r = extract_all_books(progress_callback=upd)
+                    tot = sum(len(v) for v in r.values())
+                    st.success(f"✅ {tot} diagrams from {len(r)} books")
                     st.rerun()
         
         st.markdown("---")
+        ext = get_extracted_books()
         
-        extracted = get_extracted_books()
-        
-        if not extracted:
-            st.info("🎨 No diagrams extracted yet. Click 'Extract All PDFs' to begin.")
+        if not ext:
+            st.info("Click 'Extract All' above to begin.")
         else:
-            book_display = {b: b.replace("ncert_", "").replace("_", " ").title() for b in extracted}
+            bd = {b: b.replace("ncert_","").replace("_"," ").title() for b in ext}
+            sb = st.selectbox("Book", ext, format_func=lambda x: bd[x])
             
-            db1, db2 = st.columns([2, 1])
-            with db1:
-                selected_book = st.selectbox("Book", options=extracted, format_func=lambda x: book_display[x])
-            with db2:
-                per_row = st.selectbox("Grid", [2, 3, 4, 5], index=1)
-            
-            if selected_book:
-                images = get_book_images(selected_book)
-                
-                if images:
-                    all_pages = sorted(set(img["page"] for img in images))
-                    page_options = ["All pages"] + [f"Page {p}" for p in all_pages]
-                    selected_page = st.selectbox("Filter by page", page_options)
+            if sb:
+                imgs = get_book_images(sb)
+                if imgs:
+                    pr = st.selectbox("Grid", [2, 3, 4], index=1)
+                    st.caption(f"{len(imgs)} diagrams")
                     
-                    if selected_page != "All pages":
-                        page_num = int(selected_page.replace("Page ", ""))
-                        filtered = [img for img in images if img["page"] == page_num]
-                    else:
-                        filtered = images
-                    
-                    st.caption(f"Showing {len(filtered)} diagrams")
-                    st.markdown("<div style='height: 16px'></div>", unsafe_allow_html=True)
-                    
-                    for row_start in range(0, len(filtered), per_row):
-                        cols = st.columns(per_row)
-                        for i, col in enumerate(cols):
-                            idx = row_start + i
-                            if idx < len(filtered):
-                                img = filtered[idx]
+                    for rs in range(0, len(imgs), pr):
+                        cols = st.columns(pr)
+                        for j, col in enumerate(cols):
+                            idx = rs + j
+                            if idx < len(imgs):
+                                im = imgs[idx]
                                 with col:
                                     try:
-                                        st.image(img["path"], caption=f"Page {img['page']}")
-                                        
-                                        with open(img["path"], "rb") as f:
-                                            st.download_button("↓ Download", f.read(), file_name=img["filename"], mime="image/jpeg", key=f"dl_{idx}", use_container_width=True)
+                                        st.image(im["path"], caption=f"P{im['page']}")
+                                        with open(im["path"], "rb") as f:
+                                            st.download_button("↓", f.read(), file_name=im["filename"], mime="image/jpeg", key=f"dl_{idx}", use_container_width=True)
                                     except:
-                                        st.caption(f"Error: {img['filename']}")
+                                        st.caption("Error")
                 else:
-                    st.info("No diagrams in this book")
+                    st.info("No images found")
