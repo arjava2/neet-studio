@@ -4,9 +4,9 @@ from PIL import Image
 from io import BytesIO
 import hashlib
 
-BOOKS_FOLDER = "../books"
-IMAGES_FOLDER = "../images"
-EXTRACTED_FOLDER = "../images/extracted"
+BOOKS_FOLDER = "books"
+IMAGES_FOLDER = "images"
+EXTRACTED_FOLDER = "images/extracted"
 
 
 def extract_images_from_pdf(pdf_path, min_size=100):
@@ -120,3 +120,29 @@ def copy_image_to_output(source_path, new_filename):
         return dest_path
     except:
         return None
+
+
+def save_uploaded_pdf(uploaded_file, category="other"):
+    """Save uploaded PDF to books folder with smart naming"""
+    os.makedirs(BOOKS_FOLDER, exist_ok=True)
+    
+    filename = uploaded_file.name
+    if not filename.startswith(f"ncert_{category}"):
+        base_name = filename.replace(".pdf", "").lower().replace(" ", "_")
+        filename = f"ncert_{category}_{base_name}.pdf"
+    
+    save_path = os.path.join(BOOKS_FOLDER, filename)
+    
+    with open(save_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    
+    return save_path
+
+
+def delete_pdf(filename):
+    """Delete a PDF from books folder"""
+    path = os.path.join(BOOKS_FOLDER, filename)
+    if os.path.exists(path):
+        os.remove(path)
+        return True
+    return False
