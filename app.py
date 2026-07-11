@@ -15,7 +15,7 @@ st.set_page_config(
     page_title="NEET Studio",
     page_icon="◆",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="auto"
 )
 
 st.markdown("""
@@ -38,7 +38,55 @@ st.markdown("""
         color: #ededed !important;
     }
     
-    #MainMenu, footer, header, .stDeployButton { visibility: hidden; }
+    #MainMenu, footer, .stDeployButton { visibility: hidden; }
+    
+    /* Header bar with sidebar toggle */
+    header[data-testid="stHeader"] {
+        background-color: rgba(10, 10, 10, 0.95) !important;
+        backdrop-filter: blur(10px);
+        visibility: visible !important;
+        height: auto !important;
+        border-bottom: 1px solid #1f1f1f;
+    }
+    
+    /* Sidebar toggle button - always visible */
+    [data-testid="stSidebarCollapsedControl"] {
+        display: block !important;
+        visibility: visible !important;
+        top: 12px !important;
+        left: 12px !important;
+        background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%) !important;
+        border-radius: 10px !important;
+        padding: 6px 10px !important;
+        box-shadow: 0 4px 14px rgba(99, 102, 241, 0.5) !important;
+        z-index: 999999 !important;
+        border: none !important;
+    }
+    
+    [data-testid="stSidebarCollapsedControl"] button {
+        color: white !important;
+        background: transparent !important;
+    }
+    
+    [data-testid="stSidebarCollapsedControl"] svg {
+        color: white !important;
+        fill: white !important;
+    }
+    
+    /* Mobile responsive */
+    @media (max-width: 768px) {
+        [data-testid="stSidebarCollapsedControl"] {
+            display: block !important;
+            visibility: visible !important;
+            position: fixed !important;
+            top: 10px !important;
+            left: 10px !important;
+            padding: 8px 12px !important;
+        }
+        
+        .brand-title { font-size: 20px !important; }
+        h1 { font-size: 24px !important; }
+    }
     
     section[data-testid="stSidebar"] {
         background-color: #0f0f0f !important;
@@ -450,7 +498,7 @@ st.markdown('<div style="color: #a1a1a1; font-size: 15px; margin-top: -8px;">Gen
 st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
 
 if not st.session_state.ai_ready:
-    st.info("👋 Welcome! Please add your free Gemini API key in the sidebar to get started.")
+    st.info("👋 Welcome! Please add your free Gemini API key in the sidebar to get started. Tap the ▶ button on top-left if sidebar is hidden.")
     
     st.markdown("<div style='height: 24px'></div>", unsafe_allow_html=True)
     
@@ -486,8 +534,8 @@ if not st.session_state.ai_ready:
     st.markdown("""
     1. **Get API Key** - Click the link in sidebar to get your free Gemini key
     2. **Connect** - Paste key and click Connect button
-    3. **Upload PDFs** - Add your NCERT PDFs in the Library tab
-    4. **Generate** - Select chapter and generate questions!
+    3. **Select Chapter** - Choose from pre-loaded NCERT library
+    4. **Generate** - Get NEET-level questions instantly!
     """)
     
     st.stop()
